@@ -1,0 +1,9 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+
+    <SolidColorBrush x:Key ="OrangeBrush" Color="#DE4013" />
+    <SolidColorBrush x:Key ="WheatBrush" Color="#FFF4A8" />
+    <SolidColorBrush x:Key ="MaroonBrush" Color="#610723" />
+
+</ResourceDictionary>
