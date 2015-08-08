@@ -25,6 +25,7 @@ namespace MarketDataDownloader.ViewModel
 
 
             FetchSymbols = new RelayCommand(FetchSymbolsFromYahoo);
+            ForceFetchSymbols = new RelayCommand(ForceFetchSymbolsFromYahoo);
             AddSymbolToWatched = new RelayCommand<string>(AddSymbol);
 
             fetchSymbolsWorker.DoWork += FetchSymbolsWorker_DoWork;
@@ -43,12 +44,8 @@ namespace MarketDataDownloader.ViewModel
         {
             IsNotBusy = false;
             foreach (var symbol in watchedSymbols)
-            {
                 symbol.GetPriceHistoryFromYahoo();
-            }
         }
-
-
 
         public bool IsNotBusy
         {
@@ -58,10 +55,22 @@ namespace MarketDataDownloader.ViewModel
 
         public RelayCommand FetchSymbols { get; private set; }
 
+        public RelayCommand ForceFetchSymbols { get; private set; }
+
         public RelayCommand<string> AddSymbolToWatched { get; private set; }
 
 
+        private void ForceFetchSymbolsFromYahoo()
+        {
+            foreach (var symbol in watchedSymbols)
+            {
+                symbol.LastUpdated = null;
+                symbol.NumberOfEntries = 0;
+                symbol.IsStale = true;
+            }
 
+            FetchSymbolsFromYahoo();
+        }
 
         private void FetchSymbolsFromYahoo()
         {

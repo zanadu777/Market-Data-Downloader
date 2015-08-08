@@ -76,6 +76,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Helper\NullableDateConverter.cs" />
     <Compile Include="Model\MarketSymbol.cs" />
     <Compile Include="Model\StockDataModel.cs" />

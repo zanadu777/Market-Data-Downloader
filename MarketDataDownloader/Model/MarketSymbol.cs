@@ -1,7 +1,9 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Net;
 using GalaSoft.MvvmLight;
+using MarketDataDownloader.Extensions;
 
 namespace MarketDataDownloader.Model
 {
@@ -12,17 +14,23 @@ namespace MarketDataDownloader.Model
         {
             Name = name;
             if (File.Exists(CachedDataPath))
+            {
                 LastUpdated = File.GetLastWriteTime(CachedDataPath);
+                NumberOfEntries = File.ReadAllLines(CachedDataPath).Length - 1;
+            }
         }
         public string Name { get; set; }
 
         private DateTime? lastUpdated;
+        private int numberOfEntries;
+
         public DateTime? LastUpdated
         {
             get { return lastUpdated; }
             set { Set(() => LastUpdated, ref lastUpdated, value); }
         }
 
+        private bool isStale;
         public bool IsStale
         {
             get
@@ -33,8 +41,9 @@ namespace MarketDataDownloader.Model
 
                 var fileDate = File.GetLastWriteTime(path).Date;
                 var today = DateTime.Now.Date;
-                return fileDate < today;
+                return fileDate < today || isStale;
             }
+            set { isStale = value; }
         }
 
         public void GetPriceHistoryFromYahoo()
@@ -49,6 +58,8 @@ namespace MarketDataDownloader.Model
                         1700));
 
                 File.WriteAllText(CachedDataPath, data);
+                isStale = false;
+                NumberOfEntries = data.LineCount() -1;
                 LastUpdated = File.GetLastWriteTime(CachedDataPath);
             }
         }
@@ -62,7 +73,10 @@ namespace MarketDataDownloader.Model
             }
         }
 
-
-
+        public int NumberOfEntries
+        {
+            get { return numberOfEntries; }
+            set { Set(() => NumberOfEntries, ref numberOfEntries, value); }
+        }
     }
 }

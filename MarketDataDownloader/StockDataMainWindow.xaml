@@ -9,35 +9,59 @@
         
         <helper:NullableDateConverter x:Key="DateConverter"/>
     </Window.Resources>
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="31"/>
-            <RowDefinition/>
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
-            <ColumnDefinition Width="100"/>
-        </Grid.ColumnDefinitions>
-        <Button  Content="Fetch" HorizontalAlignment="Left" Margin="48,4,0,0"
+    <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="Symbols">
+                <MenuItem Header="Force Load All" Command="{Binding ForceFetchSymbols}" />
+            </MenuItem>
+            <!--<MenuItem Header="Export">
+              
+            </MenuItem>
+
+            <MenuItem Header="R">
+
+            </MenuItem>-->
+        </Menu>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="31"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="100"/>
+            </Grid.ColumnDefinitions>
+            <Button  Content="Fetch" HorizontalAlignment="Left" Margin="48,4,0,0"
                 VerticalAlignment="Top" Width="47" Command ="{Binding FetchSymbols}"  Grid.Column="1" Height="23"
                  Background="{StaticResource MaroonBrush}"  Foreground="White"  IsEnabled="{Binding IsNotBusy}"/>
-        <TextBox x:Name="txtSymbol" HorizontalAlignment="Stretch" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Text="{Binding Filter, Mode=TwoWay}"
+            <TextBox x:Name="txtSymbol" HorizontalAlignment="Stretch" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Text="{Binding Filter, Mode=TwoWay}"
                   Margin="4,4,4,4" Background="{StaticResource WheatBrush}" TextChanged="txtSymbol_TextChanged"/>
-        <Button  Content="Add" HorizontalAlignment="Left" Margin="4,4,0,0" VerticalAlignment="Top" Width="38" Grid.Column="1" Height="23"
+            <Button  Content="Add" HorizontalAlignment="Left" Margin="4,4,0,0" VerticalAlignment="Top" Width="38" Grid.Column="1" Height="23"
                 IsEnabled="{Binding IsNotBusy}"
                 Background="{StaticResource MaroonBrush}" Foreground="White" Command="{Binding AddSymbolToWatched}" 
                  CommandParameter="{Binding ElementName=txtSymbol, Path=Text}" />
-        <ListBox  Grid.ColumnSpan="2"   Margin="4,0,4,4" Grid.Row="1"  Background="{StaticResource WheatBrush}"  
+            <ListBox  Grid.ColumnSpan="2"   Margin="4,0,4,4" Grid.Row="1"  Background="{StaticResource WheatBrush}"  
                  ItemsSource="{Binding FilteredSymbols.View}">
-        <ListBox.ItemTemplate >
-            <DataTemplate>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="{Binding Name}" Width="50"/>
-                        <TextBlock Text="{Binding LastUpdated, Converter={StaticResource DateConverter}}"/>
-                    </StackPanel>
-            </DataTemplate>
-        </ListBox.ItemTemplate>    
-        </ListBox>
+                <ListBox.ItemTemplate >
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding Name}" Width="50"/>
+                            <TextBlock Text="{Binding LastUpdated, Converter={StaticResource DateConverter}}"/>
+                            <TextBlock Text="- (" Margin="4,0,0,0" Name="LeftParen" Foreground="#FF595959"   />
+                            <TextBlock Text="{Binding NumberOfEntries}" Name ="NumberOfEntries" Foreground="#FF595959"/>
+                            <TextBlock Text=")" Name="RightParen" Foreground="#FF595959"/>
+                        </StackPanel>
+                        <DataTemplate.Triggers>
+                            <DataTrigger  Binding="{Binding NumberOfEntries}" Value="0">
+                                <Setter  TargetName="LeftParen" Property="Visibility" Value="Collapsed"/>
+                                <Setter  TargetName="NumberOfEntries" Property="Visibility" Value="Collapsed"/>
+                                <Setter  TargetName="RightParen" Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                        </DataTemplate.Triggers>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
 
-    </Grid>
+        </Grid>
+    </DockPanel>
 </Window>
